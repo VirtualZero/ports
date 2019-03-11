@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="valign-wrapper" id="showcase">
+    <div class="container" id="content">
+        <div class="row">
+            <div class="col s12">
+                <div class="container">
+                    <div class="card hoverable grey darken-3 button-border-purple">
+                        <div class="card-content">
+                            <div class="row">
+                                <h3 class="white-text">
+                                    <span id="header-text">Port Checker</span><i class="fas fa-server white-text right"></i>
+                                </h3>
+                            </div>
+
+                            <div class="row">
+                                <div class="col s12">
+                                    <ul class="tabs">
+                                        <li class="tab col s6 grey darken-3 waves-effect waves-purple">
+                                            <a href="#url-form-section" class="white-text active">By URL</a>
+                                        </li>
+
+                                        <li class="tab col s6 grey darken-3 waves-effect waves-purple">
+                                            <a href="#ip-form-section" class="white-text">By IP</a>
+                                        </li>
+                                    </ul>
+
+                                    <div id="url-form-section">
+                                        <form action="/port-by-url" , method="POST" id="url-form">
+                                            <div class="row no-padding-bottom">
+                                                <div class="col s12">
+                                                    <h4 class="white-text">Check the status of a port by URL</h4>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col s12 m12 l9">
+                                                    <div class="section"></div>
+                                                    <p class="flow-text white-text no-padding-bottom">
+                                                        URL:
+                                                    </p>
+
+                                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+
+                                                    <div class="input-field no-top-padding">
+                                                        {{ url_form.url(class="white-text", required="", pattern="https?://.+\.\w+", title="Invalid URL.", placeholder="https://www.youtube.com") }}
+                                                        <span class="helper-text red-text text-accent-1" style="display: none;" id="invalid-url"></span>
+
+                                                        {% for error in url_form.url.errors %}
+                                                        <span class="red-text text-accent-1">{{ error }}</span>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+
+                                                <div class="col s12 m12 l3">
+                                                    <div class="section"></div>
+                                                    <p class="flow-text white-text no-padding-bottom">
+                                                        Port:
+                                                    </p>
+
+                                                    <div class="input-field no-top-padding">
+                                                        {{ url_form.port(class="white-text", pattern="(\d{1,5})", title="Please enter a valid port number.", placeholder="80") }}
+                                                        <span class="helper-text red-text text-accent-1" style="display: none;" id="invalid-port-number"></span>
+
+                                                        {% for error in url_form.port.errors %}
+                                                        <span class="red-text text-accent-1">{{ error }}</span>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col s12">
+                                                    <div id="url-button-row">
+                                                        <button class="btn-flat right purple darken-1 white-text waves-effect waves-light" type="submit" name="action">Check</button>
+                                                    </div>
+
+                                                    <div class="progress" style="display: none;" id="preloader">
+                                                        <div class="indeterminate"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row" id="results-section" style="display: none;">
+                                                <div class="col s12">
+                                                    <div id="results-text">
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+
+                                    <div id="ip-form-section">
+                                        <form action="/port-by-ip" method="POST" id="ip-form">
+                                            <div class="row no-padding-bottom">
+                                                <div class="col s12">
+                                                    <h4 class="white-text">Check the status of a port by IP Address</h4>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col s12 m12 l9">
+                                                    <div class="section"></div>
+                                                    <p class="flow-text white-text no-padding-bottom">
+                                                        IP Address:
+                                                    </p>
+                                            
+                                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                                            
+                                                    <div class="input-field no-top-padding">
+                                                        {{ ip_form.ip(class="white-text", required="", pattern="(([1-2])?\d?\d\.){3}([1-2])?\d?\d", title="Invalid IP Address.", placeholder="216.58.194.46") }}
+                                                        <span class="helper-text red-text text-accent-1" style="display: none;" id="invalid-ip"></span>
+                                            
+                                                        {% for error in ip_form.ip.errors %}
+                                                        <span class="red-text text-accent-1">{{ error }}</span>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            
+                                                <div class="col s12 m12 l3">
+                                                    <div class="section"></div>
+                                                    <p class="flow-text white-text no-padding-bottom">
+                                                        Port:
+                                                    </p>
+                                            
+                                                    <div class="input-field no-top-padding">
+                                                        {{ ip_form.ip_port(class="white-text", pattern="(\d{1,5})", title="Please enter a valid port number.", placeholder="80") }}
+                                                        <span class="helper-text red-text text-accent-1" style="display: none;" id="ip-invalid-port-number"></span>
+                                            
+                                                        {% for error in ip_form.ip_port.errors %}
+                                                        <span class="red-text text-accent-1">{{ error }}</span>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col s12">
+                                                    <div id="ip-button-row">
+                                                        <button class="btn-flat right purple darken-1 white-text waves-effect waves-light" type="submit" name="action">Check</button>
+                                                    </div>
+                                            
+                                                    <div class="progress" style="display: none;" id="ip-preloader">
+                                                        <div class="indeterminate"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="row" id="ip-results-section" style="display: none;">
+                                                <div class="col s12">
+                                                    <div id="ip-results-text">
+                                            
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

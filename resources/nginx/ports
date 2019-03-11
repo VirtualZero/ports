@@ -1,0 +1,8 @@
+server {
+    server_name YOUR-DOMAIN.com www.YOUR-DOMAIN.com;
+
+    location / {
+        include proxy_params;
+        proxy_pass http://unix:/home/YOUR-USERNAME/ports/ports.sock;
+    }
+}

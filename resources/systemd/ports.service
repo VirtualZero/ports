@@ -1,0 +1,14 @@
+[Unit]
+Description=Gunicorn instance to serve ports
+After=network.target
+
+[Service]
+User=YOUR-USERNAME
+Group=www-data
+WorkingDirectory=/home/YOUR-USERNAME/ports
+Environment='APP_SECRET_KEY=YOUR-SECRET-KEY'
+ExecStart=/bin/bash -c 'cd /home/YOUR-USERNAME/ports && source /home/YOUR-USERNAME/miniconda3/bin/activate ports && gunicorn --workers 3 --bind unix:ports.sock -m 007 wsgi:app'
+
+[Install]
+WantedBy=multi-user.target
+
